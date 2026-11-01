@@ -153,7 +153,6 @@ Rather than being confined to a single layer, I engineer across the full spectru
 </p>
 
 <!-- RECENT_REPOS:START -->
-<!-- Real repositories will be automatically populated here via GitHub Action -->
 > 🚀 *Projects are actively being published. Explore the latest open-source codebases, APIs, and tools directly via live repository streams.*
 <!-- RECENT_REPOS:END -->
 
