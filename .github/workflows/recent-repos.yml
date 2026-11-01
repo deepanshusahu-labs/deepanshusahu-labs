@@ -1,0 +1,75 @@
+name: Auto Update Recent Repositories
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch Real Repositories and Update README
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          import json, os, urllib.request
+
+          username = "deepanshusahu-labs"
+          url = f"https://api.github.com/users/{username}/repos?sort=updated&direction=desc&per_page=20"
+          req = urllib.request.Request(url, headers={"User-Agent": "Repo-Updater", "Accept": "application/vnd.github.v3+json"})
+          
+          with urllib.request.urlopen(req) as resp:
+              repos = json.loads(resp.read().decode())
+
+          # Sirf real public repos (profile repo aur forks ko chhodkar)
+          top_repos = [r for r in repos if r["name"].lower() != username.lower() and not r["fork"]][:4]
+
+          if top_repos:
+              lines = ["<table>\n<tr>"]
+              for i, r in enumerate(top_repos):
+                  name = r["name"]
+                  html_url = r["html_url"]
+                  desc = r["description"] or "Production codebase"
+                  lang = r["language"] or "Tech"
+                  stars = r["stargazers_count"]
+                  
+                  card = f"""<td width="50%" valign="top">\n\n### 📦 [{name}]({html_url})\n> {desc}\n\n`{lang}` • ⭐ {stars}\n\n</td>"""
+                  lines.append(card)
+                  if i % 2 == 1 and i != len(top_repos) - 1:
+                      lines.append("</tr>\n<tr>")
+              lines.append("</tr>\n</table>")
+              content = "\n".join(lines)
+          else:
+              content = '> 🚀 *Projects are actively being published. Explore the latest open-source codebases, APIs, and tools directly via live repository streams.*'
+
+          with open("README.md", "r", encoding="utf-8") as f:
+              readme = f.read()
+
+          start, end = "<!-- RECENT_REPOS:START -->", "<!-- RECENT_REPOS:END -->"
+          if start in readme and end in readme:
+              new_readme = f"{readme.split(start)[0]}{start}\n{content}\n{end}{readme.split(end)[1]}"
+              with open("README.md", "w", encoding="utf-8") as f:
+                  f.write(new_readme)
+        shell: python
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(readme): sync real repositories [skip ci]"
+            git push
+          fi
