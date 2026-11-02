@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Name](https://readme-typing-svg.demolab.com?font=Dancing+Script&weight=700&size=52&pause=1200&color=FFFFFF&center=true&vCenter=true&width=700&height=90&lines=Hey%2C+I%27m+Deepanshu+Sahu+%F0%9F%91%8B)](https://github.com/deepanshusahu-labs)
+[![Name](https://readme-typing-svg.demolab.com?font=Dancing+Script&weight=700&size=52&pause=1200&color=AA6600&center=true&vCenter=true&width=700&height=90&lines=Hey%2C+I%27m+Deepanshu+Sahu+%F0%9F%91%8B)](https://github.com/deepanshusahu-labs)
 
 <p align="center">
   <b>⚡ Full Product Engineer &nbsp;•&nbsp; 🤖 AI Engineer &nbsp;•&nbsp; 🔬 Solo Builder</b>
